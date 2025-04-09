@@ -1,189 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Too Late in the Canyon</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Press Start 2P', cursive;
-      padding: 30px;
-      image-rendering: pixelated;
-      font-size: 12px;
-      line-height: 1.8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      text-align: left;
-      flex-direction: column;
-    }
+    <meta charset="UTF-8">
+    <title>Unspoken Words</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            padding: 30px;
+            image-rendering: pixelated;
+            font-size: 12px;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: left;
+            flex-direction: column;
+        }
 
-    #dialogue {
-      max-width: 800px;
-      white-space: pre-wrap;
-      transition: opacity 0.5s ease-in-out;
-    }
+        #dialogue {
+            max-width: 800px;
+            white-space: pre-wrap;
+        }
 
-    .button {
-      display: inline-block;
-      margin: 20px 10px;
-      padding: 10px 20px;
-      background-color: #444;
-      color: #fff;
-      border: 2px solid #fff;
-      cursor: pointer;
-    }
+        .button {
+            display: inline-block;
+            margin: 20px 10px;
+            padding: 10px 20px;
+            background-color: #444;
+            color: #fff;
+            border: 2px solid #fff;
+            cursor: pointer;
+        }
 
-    .button:hover {
-      background-color: #666;
-    }
+        .button:hover {
+            background-color: #666;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .hidden {
+            display: none;
+        }
 
-    #moon {
-      width: 200px;
-      image-rendering: pixelated;
-      margin-top: 20px;
-    }
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
 
-    .cursor {
-      display: inline-block;
-      animation: blink 1s infinite;
-    }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
 
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-  </style>
+        #moon {
+            width: 200px;
+            image-rendering: pixelated;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
+    <div id="dialogue"></div>
+    <div id="choices" class="hidden">
+        <button class="button" onclick="handleChoice(true)">Ready</button>
+        <button class="button" onclick="handleChoice(false)">Not Yet</button>
+    </div>
 
-  <audio id="bgMusic" autoplay loop>
-    <source src="videoplayback.webm" type="audio/webm">
-    Your browser does not support the audio element.
-  </audio>
+    <script>
+        const dialogue = document.getElementById("dialogue");
+        const choices = document.getElementById("choices");
 
-  <div id="dialogue"></div>
+        const intro = `In a small town nestled in the mountains of Japan, two childhood friends, Haruto and Aiko, grew up together, sharing everything from school projects to silly secrets. They had always been inseparable—two sides of the same coin. However, as they entered their final year of high school, something began to shift in Haruto’s heart. He realized that his feelings for Aiko had grown beyond friendship.\n\nEvery time Aiko smiled at him or laughed at his jokes, a fluttering warmth filled his chest. But Haruto was terrified. Terrified that if he confessed his feelings, it might ruin everything. Their bond was too precious, and he couldn’t risk losing her, even if it meant hiding his emotions. So, he kept his love buried deep inside, pretending everything was normal.`;
 
-  <div id="choices" class="hidden">
-    <button class="button" onclick="handleChoice(true)">Ready</button>
-    <button class="button" onclick="handleChoice(false)">Not Yet</button>
-  </div>
+        const story = `Aiko, on the other hand, had noticed the subtle changes in Haruto’s behavior. She sensed that he had grown distant, a little more reserved than usual. Yet, she didn't know why. What she didn't realize was that Haruto’s hesitance was rooted in the fear of rejection. She had secretly hoped that Haruto would someday tell her how he felt, but days turned into weeks, and weeks into months, and still, Haruto remained silent.\n\nAiko began to feel the weight of waiting. She wondered if Haruto would ever see her as more than just a friend. Was she just imagining things? Was he just not interested? Eventually, the thought of waiting forever for something that might never come started to wear on her.`;
 
+        const turningPoint = `One evening, as the sun set behind the hills, Aiko found herself talking to someone else—a kind and gentle classmate named Kaito. He had always been there for her, offering a kind word or a helping hand. Slowly, over time, their friendship blossomed into something more. They began spending time together after school, and Aiko found herself drawn to him, his warmth and attention filling the void that had once been reserved for Haruto.\n\nWhen Haruto finally realized what had happened, a pang of regret washed over him. He saw Aiko laughing with Kaito, her hand in his, and a feeling of deep sorrow settled in his heart. He had waited too long. He had been too afraid to confess, and now, someone else had claimed the place he had secretly longed for.`;
 
+        const conclusion = `It was only then that Haruto understood the consequences of his silence. He had been so scared of ruining their friendship that he had lost the chance to be with the person he cared about the most. His feelings for Aiko hadn’t changed, but now, it was too late.\n\nAiko, noticing the sad look in Haruto’s eyes, walked up to him one afternoon. "Haruto," she said softly, "I... I thought you’d tell me how you felt. But I couldn’t wait forever. Kaito... he was there when I needed someone."\n\nHaruto looked at her, his heart breaking, but he could only smile bitterly. "I’m sorry, Aiko. I never wanted to hurt you. I was just too afraid."\n\nAiko gently placed a hand on his shoulder. "You should’ve said something sooner. I waited, but sometimes, people move on when they feel they’re not enough for the other person."`;
 
-  <script>
-    const dialogue = document.getElementById("dialogue");
-    const choices = document.getElementById("choices");
+        const lesson = `A few weeks later, Aiko and Kaito officially became a couple, and Haruto, though heartbroken, accepted the reality. He had learned that sometimes, silence could be louder than words, and that hesitation could cost you the most important thing in your life.\n\nAs time passed, Haruto and Aiko’s friendship began to heal. Though it wasn’t the same, they still shared the bond they had grown up with. And in the quiet moments, Haruto would look at Aiko and Kaito together, his heart aching, but also thankful for the memories they shared, the love that was once there, and the lesson he had learned: sometimes, you have to be brave enough to speak your heart before it’s too late.`;
 
-    const intro = `Hello... goodmorning, goodevening, or kahit ano pa man yan (idk what time your seeing this rn) anyways i got a short story for you, idk kung magugustuhan mo ito, yung message nasa last part, anyways lets get moving`;
+        const ending = `**The End**`;
 
-    const story = `Too Late in the Canyon
+        let index = 0;
+        let textToDisplay = "";
+        let currentStep = 0;
 
-Sa Canyon High, walang fairy tale. At least yun ang palusot ni Eli tuwing kinikilig siya kay Nina—yung babaeng laging may dalang sketchbook, laging hindi nakatali ang sintas ng sapatos, at laging may kantang hina-hum na parang siya lang ang nakakaalam.
+        function typeWriter(text, callback) {
+            if (index < text.length) {
+                dialogue.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(() => typeWriter(text, callback), 30);
+            } else {
+                if (callback) callback();
+            }
+        }
 
-Crush niya si Nina simula pa ng unang araw ng sophomore year. Humiram lang ito ng ballpen sa kanya noon, at literal na hindi siya nakapagsalita. Tango lang siya ng tango habang iniabot ang pen.
+        function showChoices() {
+            choices.classList.remove("hidden");
+        }
 
-Dalawang taon na ang lumipas. Wala pa rin siyang nasasabi. Tinitingnan niya lang ito mula sa malayo. Kabado. Tahimik. Para bang sapat na ang makita lang niya ito masaya.
+        function handleChoice(ready) {
+            choices.classList.add("hidden");
+            if (ready) {
+                nextStep();
+            } else {
+                dialogue.innerHTML += "\n\nOkay, take your time...";
+                setTimeout(() => {
+                    dialogue.innerHTML += "\n\nAre you ready now?";
+                    choices.classList.remove("hidden");
+                }, 10000);
+            }
+        }
 
-...
+        function nextStep() {
+            index = 0;
+            dialogue.innerHTML = "";
+            if (currentStep === 0) {
+                textToDisplay = intro;
+                currentStep++;
+                typeWriter(textToDisplay, showChoices);
+            } else if (currentStep === 1) {
+                textToDisplay = story;
+                currentStep++;
+                typeWriter(textToDisplay, showChoices);
+            } else if (currentStep === 2) {
+                textToDisplay = turningPoint;
+                currentStep++;
+                typeWriter(textToDisplay, showChoices);
+            } else if (currentStep === 3) {
+                textToDisplay = conclusion;
+                currentStep++;
+                typeWriter(textToDisplay, showChoices);
+            } else if (currentStep === 4) {
+                textToDisplay = lesson;
+                currentStep++;
+                typeWriter(textToDisplay, showChoices);
+            } else if (currentStep === 5) {
+                textToDisplay = ending;
+                currentStep++;
+                typeWriter(textToDisplay, () => {
+                    dialogue.classList.add("fade-in");
+                });
+            }
+        }
 
-Now for the important part... or maybe the *kilig* part.
-
-Are you ready to unveil the message behind this?`;
-
-    const confession = `So... I've been thinking this for weeks now... no, almost a month now.
-
-I hope you still see me the same if I say this...
-
-I like you... I mean it.
-
-Sana naman hindi to kumalat hehe...
-
-I really don’t need an answer right now.
-
-One last thing...
-
-(The moon is beautiful, isn’t it?)`;
-
-    let paragraphs = [];
-    let index = 0;
-    let currentStep = 0;
-
-    function splitIntoParagraphs(text) {
-      return text.trim().split(/\n\s*\n/);
-    }
-
-    function typeWriter(text, i, callback) {
-      if (i < text.length) {
-        dialogue.innerHTML = text.slice(0, i) + '<span class="cursor">|</span>';
-        if (text[i] !== ' ') typingSound.play();
-        setTimeout(() => typeWriter(text, i + 1, callback), 60);
-      } else {
-        dialogue.innerHTML = text; // remove cursor
-        setTimeout(callback, 1200); // short pause before next
-      }
-    }
-
-    function showParagraphs(paragraphsArray, i = 0, callback) {
-      if (i >= paragraphsArray.length) {
-        if (callback) callback();
-        return;
-      }
-
-      dialogue.style.opacity = 0;
-      setTimeout(() => {
-        dialogue.innerHTML = "";
-        dialogue.style.opacity = 1;
-        typeWriter(paragraphsArray[i], 0, () => {
-          setTimeout(() => showParagraphs(paragraphsArray, i + 1, callback), 1000);
-        });
-      }, 500); // fade transition time
-    }
-
-    function showChoices() {
-      choices.classList.remove("hidden");
-    }
-
-    function handleChoice(ready) {
-      choices.classList.add("hidden");
-      if (ready) {
-        nextStep();
-      } else {
-        dialogue.innerHTML = "Okay, take your time...";
-        setTimeout(() => {
-          dialogue.innerHTML = "Are you ready now?";
-          choices.classList.remove("hidden");
-        }, 10000);
-      }
-    }
-
-    function nextStep() {
-      index = 0;
-      dialogue.innerHTML = "";
-      if (currentStep === 0) {
-        paragraphs = splitIntoParagraphs(story);
-        currentStep++;
-        showParagraphs(paragraphs, 0, showChoices);
-      } else if (currentStep === 1) {
-        paragraphs = splitIntoParagraphs(confession);
-        currentStep++;
-        showParagraphs(paragraphs, 0, () => {
-          moon.classList.remove("hidden");
-        });
-      }
-    }
-
-    // Start typing the intro
-    paragraphs = splitIntoParagraphs(intro);
-    showParagraphs(paragraphs, 0, showChoices);
-  </script>
-
+        // Start typing the intro
+        textToDisplay = intro;
+        typeWriter(textToDisplay, showChoices);
+    </script>
 </body>
 </html>

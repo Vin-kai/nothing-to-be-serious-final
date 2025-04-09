@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Too Late in the Canyon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', cursive;
+      padding: 30px;
+      image-rendering: pixelated;
+      font-size: 12px;
+      line-height: 1.8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: left;
+      flex-direction: column;
+    }
+
+    #dialogue {
+      max-width: 800px;
+      white-space: pre-wrap;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .button {
+      display: inline-block;
+      margin: 20px 10px;
+      padding: 10px 20px;
+      background-color: #444;
+      color: #fff;
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #moon {
+      width: 200px;
+      image-rendering: pixelated;
+      margin-top: 20px;
+    }
+
+    .cursor {
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bgMusic" autoplay loop>
+    <source src="videoplayback.webm" type="audio/webm">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="dialogue"></div>
+
+  <div id="choices" class="hidden">
+    <button class="button" onclick="handleChoice(true)">Ready</button>
+    <button class="button" onclick="handleChoice(false)">Not Yet</button>
+  </div>
+
+  <img id="moon" src="https://i.ibb.co/z6XrDKq/pixel-moon.png" class="hidden" alt="Pixel Moon">
+
+  <script>
+    const dialogue = document.getElementById("dialogue");
+    const choices = document.getElementById("choices");
+    const moon = document.getElementById("moon");
+
+    const typingSound = new Audio("typewriter.mp3"); // ensure typewriter.mp3 is in the same folder
+    typingSound.volume = 0.3;
+
+    const intro = `Omg HIII, sorry like super random and late na but like I just had to message you ‘cause I have story and I swear, you're gonna love this storyyy—like, I just KNOW it’s your vibe, promise!! Sobrang random but like worth it, swear.
+
+Ready ka na ba?`;
+
+    const story = `Too Late in the Canyon
+
+Sa Canyon High, walang fairy tale. At least yun ang palusot ni Eli tuwing kinikilig siya kay Nina—yung babaeng laging may dalang sketchbook, laging hindi nakatali ang sintas ng sapatos, at laging may kantang hina-hum na parang siya lang ang nakakaalam.
+
+Crush niya si Nina simula pa ng unang araw ng sophomore year. Humiram lang ito ng ballpen sa kanya noon, at literal na hindi siya nakapagsalita. Tango lang siya ng tango habang iniabot ang pen.
+
+Dalawang taon na ang lumipas. Wala pa rin siyang nasasabi. Tinitingnan niya lang ito mula sa malayo. Kabado. Tahimik. Para bang sapat na ang makita lang niya ito masaya.
+
+...
+
+Now for the important part... or maybe the *kilig* part.
+
+Are you ready to unveil the message behind this?`;
+
+    const confession = `So... I've been thinking this for weeks now... no, almost a month now.
+
+I hope you still see me the same if I say this...
+
+I like you... I mean it.
+
+Sana naman hindi to kumalat hehe...
+
+I really don’t need an answer right now.
+
+One last thing...
+
+(The moon is beautiful, isn’t it?)`;
+
+    let paragraphs = [];
+    let index = 0;
+    let currentStep = 0;
+
+    function splitIntoParagraphs(text) {
+      return text.trim().split(/\n\s*\n/);
+    }
+
+    function typeWriter(text, i, callback) {
+      if (i < text.length) {
+        dialogue.innerHTML = text.slice(0, i) + '<span class="cursor">|</span>';
+        if (text[i] !== ' ') typingSound.play();
+        setTimeout(() => typeWriter(text, i + 1, callback), 60);
+      } else {
+        dialogue.innerHTML = text; // remove cursor
+        setTimeout(callback, 1200); // short pause before next
+      }
+    }
+
+    function showParagraphs(paragraphsArray, i = 0, callback) {
+      if (i >= paragraphsArray.length) {
+        if (callback) callback();
+        return;
+      }
+
+      dialogue.style.opacity = 0;
+      setTimeout(() => {
+        dialogue.innerHTML = "";
+        dialogue.style.opacity = 1;
+        typeWriter(paragraphsArray[i], 0, () => {
+          setTimeout(() => showParagraphs(paragraphsArray, i + 1, callback), 1000);
+        });
+      }, 500); // fade transition time
+    }
+
+    function showChoices() {
+      choices.classList.remove("hidden");
+    }
+
+    function handleChoice(ready) {
+      choices.classList.add("hidden");
+      if (ready) {
+        nextStep();
+      } else {
+        dialogue.innerHTML = "Okay, take your time...";
+        setTimeout(() => {
+          dialogue.innerHTML = "Are you ready now?";
+          choices.classList.remove("hidden");
+        }, 10000);
+      }
+    }
+
+    function nextStep() {
+      index = 0;
+      dialogue.innerHTML = "";
+      if (currentStep === 0) {
+        paragraphs = splitIntoParagraphs(story);
+        currentStep++;
+        showParagraphs(paragraphs, 0, showChoices);
+      } else if (currentStep === 1) {
+        paragraphs = splitIntoParagraphs(confession);
+        currentStep++;
+        showParagraphs(paragraphs, 0, () => {
+          moon.classList.remove("hidden");
+        });
+      }
+    }
+
+    // Start typing the intro
+    paragraphs = splitIntoParagraphs(intro);
+    showParagraphs(paragraphs, 0, showChoices);
+  </script>
+
+</body>
+</html>
